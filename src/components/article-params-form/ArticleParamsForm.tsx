@@ -18,7 +18,7 @@ import { Text } from '../text';
 import { Select } from '../select';
 import { RadioGroup } from '../radio-group';
 import { Separator } from '../separator';
-import { useOutsideClickClose } from '../select/hooks/useOutsideClickClose';
+import { useClose } from './hooks/useClose';
 
 export type ArticleParamsFormProps = {
 	setAppState: (value: ArticleStateType) => void;
@@ -26,7 +26,7 @@ export type ArticleParamsFormProps = {
 
 export const ArticleParamsForm = (props: ArticleParamsFormProps) => {
 	const { setAppState } = props;
-	const [isOpened, setIsOpened] = useState<boolean>(false);
+	const [isMenuOpen, setIsMenuOpened] = useState<boolean>(false);
 	const [formState, setFormState] =
 		useState<ArticleStateType>(defaultArticleState);
 
@@ -53,22 +53,21 @@ export const ArticleParamsForm = (props: ArticleParamsFormProps) => {
 		setAppState(defaultArticleState);
 	};
 
-	useOutsideClickClose({
-		isOpen: isOpened,
+	useClose({
+		isOpen: isMenuOpen,
+		onClose: () => setIsMenuOpened(false),
 		rootRef: formRef,
-		onClose: () => setIsOpened(false),
-		onChange: setIsOpened,
 	});
 
 	return (
 		<>
 			<ArrowButton
-				isActive={isOpened}
-				onClick={() => setIsOpened((prevIsOpen) => !prevIsOpen)}
+				isActive={isMenuOpen}
+				onClick={() => setIsMenuOpened((prevIsOpen) => !prevIsOpen)}
 			/>
 
 			<aside
-				className={clsx(styles.container, isOpened && styles.container_open)}
+				className={clsx(styles.container, isMenuOpen && styles.container_open)}
 				ref={formRef}>
 				<form
 					className={styles.form}
